@@ -1,12 +1,12 @@
 package trySwing;
 
 import java.awt.EventQueue;
+import java.awt.List;
 
 import javax.swing.JFrame;
- 
- 
+
 import javax.swing.JComboBox;
- 
+
 import javax.swing.JOptionPane;
 import javax.swing.JTable;
 import javax.swing.JScrollPane;
@@ -16,18 +16,21 @@ import java.awt.event.ActionEvent;
 import javax.swing.JTextArea;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
- 
+import java.sql.SQLException;
+import java.awt.Color;
+import javax.swing.ScrollPaneConstants;
 
 public class theWindow {
 
 	private JFrame frame;
-	private JTable table;
 	private int num = 0;
 	private JTextArea txt;
 	private JComboBox cmb;
-	private static theWindow window ;
+	private static theWindow window;
 	private static login _login;
-	
+	private TestingData testingData;
+	private JComboBox comboBox;
+	private JScrollPane scrollPane_1;
 
 	/**
 	 * Launch the application.
@@ -36,8 +39,9 @@ public class theWindow {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					   window = new theWindow();
+					window = new theWindow();
 					window.frame.setVisible(true);
+					window.testingData = new TestingData();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -57,8 +61,8 @@ public class theWindow {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		 
-		 
+		frame.getContentPane().setBackground(new Color(153, 153, 0));
+
 		frame.setBounds(100, 100, 606, 440);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame.getContentPane().setLayout(null);
@@ -66,56 +70,66 @@ public class theWindow {
 		JButton btnNewButton = new JButton("Load Data");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				 
-                txt.setText(  txt.getText() + "\n" +  ++num);
-                cmb.addItem(" " + num);
-                cmb.addItem("whats wrong");
-                JOptionPane.showMessageDialog( frame, "My Goodness, this is so concise" );
-                
-                
+
+				// txt.setText( txt.getText() + "\n" + ++num);
+				cmb.addItem(" " + num);
+				cmb.addItem("whats wrong");
+				// JOptionPane.showMessageDialog( frame, "My Goodness, this is
+				// so concise" );
+
+				try {
+
+					txt.setText(window.testingData.getData().trim());
+					 
+				}
+
+				catch (SQLException e1) {
+					e1.printStackTrace();
+				}
+
 			}
 		});
-		btnNewButton.setBounds(239, 19, 117, 29);
+		btnNewButton.setBounds(358, 19, 117, 29);
 		frame.getContentPane().add(btnNewButton);
 
-		JScrollPane scrollPane = new JScrollPane();
-		scrollPane.setBounds(358, 111, 192, 263);
-		frame.getContentPane().add(scrollPane);
-
-		table = new JTable();
-		scrollPane.setViewportView(table);
-
 		cmb = new JComboBox();
-		 
-		 
+
 		cmb.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				
+
 			}
 		});
 		cmb.setBounds(51, 111, 165, 36);
 		frame.getContentPane().add(cmb);
-		
-		  txt = new JTextArea();
-		txt.setBounds(91, 214, 192, 113);
-		frame.getContentPane().add(txt);
-		
+
 		JButton cmdLogin = new JButton("Login Page");
 		cmdLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				
-			if (_login == null ) {_login = new login(frame);	}
-				
-		
+
+				if (_login == null) {
+					_login = new login(frame);
+				}
+
 				_login.setVisible(true);
-			 	window.frame.setVisible(false);
-			 //  window.frame.setEnabled(false);
-				
-				
+				window.frame.setVisible(false);
+				// window.frame.setEnabled(false);
+
 			}
 		});
-		cmdLogin.setBounds(25, 19, 117, 29);
+		cmdLogin.setBounds(52, 19, 140, 29);
 		frame.getContentPane().add(cmdLogin);
+
+		comboBox = new JComboBox();
+		comboBox.setBounds(51, 72, 153, 27);
+		frame.getContentPane().add(comboBox);
+				
+				scrollPane_1 = new JScrollPane();
+				scrollPane_1.setBounds(40, 195, 277, 94);
+				frame.getContentPane().add(scrollPane_1);
+		
+				txt = new JTextArea();
+				scrollPane_1.setViewportView(txt);
+				txt.setWrapStyleWord(true);
 	}
 }
