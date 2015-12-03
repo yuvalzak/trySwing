@@ -24,19 +24,20 @@ import javax.swing.JOptionPane;
 import javax.swing.JMenu;
 import javax.swing.event.MenuKeyListener;
 import javax.swing.event.MenuKeyEvent;
+import javax.swing.JPasswordField;
  
  
 
 public class Login extends JFrame {
 
 	private JPanel contentPane;
-	private JTextField textField;
-	private JTextField textField_1;
+	private JTextField txtUserName;
 	private JFrame  _frame;
 	 
 	private static Login login;
 	private JButton btnNewButton;
 	private NewUser newUser;
+	private JPasswordField txtPassword;
 	
 	 
 	 
@@ -94,15 +95,10 @@ public class Login extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		
-		textField = new JTextField();
-		textField.setBounds(111, 56, 134, 28);
-		contentPane.add(textField);
-		textField.setColumns(10);
-		
-		textField_1 = new JTextField();
-		textField_1.setBounds(111, 108, 134, 28);
-		contentPane.add(textField_1);
-		textField_1.setColumns(10);
+		txtUserName = new JTextField();
+		txtUserName.setBounds(111, 56, 134, 28);
+		contentPane.add(txtUserName);
+		txtUserName.setColumns(10);
 		
 		JLabel lblNewLabel = new JLabel("user");
 		lblNewLabel.setBounds(111, 28, 61, 16);
@@ -112,18 +108,28 @@ public class Login extends JFrame {
 		lblPassword.setBounds(111, 90, 61, 16);
 		contentPane.add(lblPassword);
 		
+		
+		TestingData data = new TestingData();
+		
+		
 		  btnNewButton = new JButton("Enter");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-	     	
+	     	if(data.LoginUser(txtUserName.getText(), txtPassword.getPassword().toString()) > 0 ) {
 			 	_frame.setVisible(true);	
 				//_frame.setEnabled(true);
 			//	setVisible(false); //you can't see me!
 				dispose(); //Destroy the JFrame object
+	     	}
+	     	JOptionPane.showMessageDialog( login, "no user with this password !!");
 		       
 			}
 		});
 		btnNewButton.setBounds(111, 145, 117, 29);
 		contentPane.add(btnNewButton);
+		
+		txtPassword = new JPasswordField();
+		txtPassword.setBounds(111, 118, 134, 28);
+		contentPane.add(txtPassword);
 	}
 }

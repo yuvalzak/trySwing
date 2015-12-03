@@ -2,9 +2,51 @@ package trySwing;
 
 import java.sql.*;
 
- //* inspired by : www.luv2code.com
+//* inspired by : www.luv2code.com
 public class TestingData {
 
+	public int LoginUser(String name, String password) {
+		Connection myConn = null;
+		ResultSet myRs = null  ;
+		
+		int userId = -1;
+
+		String sql;
+		sql = "Select userId from `demo`.`users` where `userName` = ? AND `password` = ? ";
+
+		try {
+			myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/demo", "student", "student");
+
+			PreparedStatement preparedStmt = myConn.prepareStatement(sql);
+			preparedStmt.setString(1, name);
+			preparedStmt.setString(2, password);
+			// preparedStmt.execute();
+			  myRs = preparedStmt.executeQuery(sql);
+			while (myRs.next()) {
+				userId = myRs.getInt("userId");
+
+			}
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		finally {
+
+			try {
+				this.close(myConn, myRs);
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		return userId;
+	}
+
+	
+	
+	
 	public Boolean makeNewUser(String name, String password) {
 		Connection myConn = null;
 
@@ -19,14 +61,14 @@ public class TestingData {
 			preparedStmt.setString(2, password);
 			preparedStmt.execute();
 
-		//	System.out.println("did insert of new user");
+			// System.out.println("did insert of new user");
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
-		finally{
+
+		finally {
 			if (myConn != null) {
 				try {
 					myConn.close();
@@ -70,20 +112,16 @@ public class TestingData {
 		} catch (Exception exc) {
 			exc.printStackTrace();
 		} finally {
-			
+
 			this.close(myConn, myStmt, myRs);
-			
-			/*if (myRs != null) {
-				myRs.close();
-			}
 
-			if (myStmt != null) {
-				myStmt.close();
-			}
-
-			if (myConn != null) {
-				myConn.close();
-			}*/
+			/*
+			 * if (myRs != null) { myRs.close(); }
+			 * 
+			 * if (myStmt != null) { myStmt.close(); }
+			 * 
+			 * if (myConn != null) { myConn.close(); }
+			 */
 
 		}
 		return sb.toString();
@@ -102,27 +140,27 @@ public class TestingData {
 
 		return sb.toString();
 	}
-	
 
-	private static void close(Connection myConn, Statement myStmt, ResultSet myRs)
-			throws SQLException {
+	private static void close(Connection myConn, Statement myStmt, ResultSet myRs) throws SQLException {
 
 		if (myRs != null) {
 			myRs.close();
 		}
 
 		if (myStmt != null) {
-			
+			myStmt.close();
 		}
-		
+
 		if (myConn != null) {
 			myConn.close();
 		}
 	}
 
 	private void close(Statement myStmt, ResultSet myRs) throws SQLException {
-		close(null, myStmt, myRs);		
+		close(null, myStmt, myRs);
 	}
 
-
+	private void close(Connection myConn, ResultSet myRs) throws SQLException {
+		close(myConn, null, myRs);
+	}
 }
