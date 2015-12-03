@@ -1,66 +1,128 @@
 package trySwing;
 
-
-import java.awt.List;
 import java.sql.*;
 
+ //* inspired by : www.luv2code.com
+public class TestingData {
 
-/**
- * 
- * @author www.luv2code.com
- *
- */
-public   class TestingData {
+	public Boolean makeNewUser(String name, String password) {
+		Connection myConn = null;
 
-	 
-	public String getData() throws SQLException {
+		String sql;
+		sql = "INSERT INTO `demo`.`users` ( `userName`, `password`)  VALUES (?,?)";
+
+		try {
+			myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/demo", "student", "student");
+
+			PreparedStatement preparedStmt = myConn.prepareStatement(sql);
+			preparedStmt.setString(1, name);
+			preparedStmt.setString(2, password);
+			preparedStmt.execute();
+
+		//	System.out.println("did insert of new user");
+
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		finally{
+			if (myConn != null) {
+				try {
+					myConn.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return true;
+	}
+
+	public String getData(String sql, String[] show) throws SQLException {
 
 		Connection myConn = null;
 		Statement myStmt = null;
 		ResultSet myRs = null;
-		
-		 StringBuilder sb = new StringBuilder();
-		 
-		
-		
+
+		if (sql == "") {
+			sql = "select * from employees";
+		}
+
+		if (show[0] == null) {
+			show[0] = "last_name";
+			show[1] = "first_name";
+		}
+
+		StringBuilder sb = new StringBuilder();
+
 		try {
-			// 1. Get a connection to database
-			myConn = DriverManager.getConnection ( "jdbc:mysql://localhost:3306/demo",  "student" , "student");
-			
-			System.out.println("Database connection successful!\n");
-			
-			// 2. Create a statement
+			myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/demo", "student", "student");
 			myStmt = myConn.createStatement();
-			
-			// 3. Execute SQL query
-			myRs = myStmt.executeQuery("select * from employees");
-			
-			// 4. Process the result set
+			myRs = myStmt.executeQuery(sql);
 			while (myRs.next()) {
-			//	System.out.println(myRs.getString("last_name") + ", " + myRs.getString("first_name"));
-			  sb.append("\n"  + myRs.getString("last_name") + ", " + myRs.getString("first_name"));
+				// System.out.println(myRs.getString("last_name") + ", " +
+				// myRs.getString("first_name"));
+				// sb.append("\n" + myRs.getString("last_name") + ", " +
+				// myRs.getString("first_name"));
+				sb.append("\n" + appendString(show, myRs));
 			}
-			
-		}
-		catch (Exception exc) {
+
+		} catch (Exception exc) {
 			exc.printStackTrace();
-		}
-		finally {
-			if (myRs != null) {
+		} finally {
+			
+			this.close(myConn, myStmt, myRs);
+			
+			/*if (myRs != null) {
 				myRs.close();
 			}
-			
+
 			if (myStmt != null) {
 				myStmt.close();
 			}
-			
+
 			if (myConn != null) {
 				myConn.close();
-			}
-			
-			
+			}*/
+
 		}
 		return sb.toString();
 	}
+
+	private String appendString(String[] show, ResultSet rs) {
+		StringBuilder sb = new StringBuilder();
+		for (int i = 0; i < show.length; i++) {
+			try {
+				sb.append(" " + rs.getString(show[i]));
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+
+		}
+
+		return sb.toString();
+	}
+	
+
+	private static void close(Connection myConn, Statement myStmt, ResultSet myRs)
+			throws SQLException {
+
+		if (myRs != null) {
+			myRs.close();
+		}
+
+		if (myStmt != null) {
+			
+		}
+		
+		if (myConn != null) {
+			myConn.close();
+		}
+	}
+
+	private void close(Statement myStmt, ResultSet myRs) throws SQLException {
+		close(null, myStmt, myRs);		
+	}
+
 
 }

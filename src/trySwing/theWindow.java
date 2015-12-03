@@ -22,14 +22,14 @@ import javax.swing.ScrollPaneConstants;
 
 public class theWindow {
 
-	private JFrame frame;
+	private JFrame frmMainPage;
 	private int num = 0;
 	private JTextArea txt;
 	private JComboBox cmb;
 	private static theWindow window;
-	private static login _login;
+	private static Login _login;
 	private TestingData testingData;
-	private JComboBox comboBox;
+	private JComboBox cmbTables;
 	private JScrollPane scrollPane_1;
 
 	/**
@@ -40,7 +40,7 @@ public class theWindow {
 			public void run() {
 				try {
 					window = new theWindow();
-					window.frame.setVisible(true);
+					window.frmMainPage.setVisible(true);
 					window.testingData = new TestingData();
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -60,26 +60,41 @@ public class theWindow {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		frame = new JFrame();
-		frame.getContentPane().setBackground(new Color(153, 153, 0));
+		frmMainPage = new JFrame();
+		frmMainPage.setTitle("Main Page");
+		frmMainPage.getContentPane().setBackground(new Color(153, 153, 0));
 
-		frame.setBounds(100, 100, 606, 440);
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.getContentPane().setLayout(null);
+		frmMainPage.setBounds(100, 100, 606, 440);
+		frmMainPage.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frmMainPage.getContentPane().setLayout(null);
 
 		JButton btnNewButton = new JButton("Load Data");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
 				// txt.setText( txt.getText() + "\n" + ++num);
-				cmb.addItem(" " + num);
-				cmb.addItem("whats wrong");
+		//		cmb.addItem(" " + num);
+		//		cmb.addItem("whats wrong");
 				// JOptionPane.showMessageDialog( frame, "My Goodness, this is
 				// so concise" );
 
+				String [] show = null ;
+				String sql = null ;
 				try {
-
-					txt.setText(window.testingData.getData().trim());
+					
+					switch(cmbTables.getSelectedItem().toString()) {
+					
+					case "employees" :
+						  show = new String[] {"first_name", "last_name", "salary"};
+						  sql = "select * from employees";
+						  break;
+					case "users" :
+					  show = new String[] {"userName", "password" };
+					  sql = "select * from users";
+					  break;
+					}
+			
+           txt.setText(window.testingData.getData(sql,show).trim());
 					 
 				}
 
@@ -90,7 +105,7 @@ public class theWindow {
 			}
 		});
 		btnNewButton.setBounds(358, 19, 117, 29);
-		frame.getContentPane().add(btnNewButton);
+		frmMainPage.getContentPane().add(btnNewButton);
 
 		cmb = new JComboBox();
 
@@ -101,32 +116,34 @@ public class theWindow {
 			}
 		});
 		cmb.setBounds(51, 111, 165, 36);
-		frame.getContentPane().add(cmb);
+		frmMainPage.getContentPane().add(cmb);
 
 		JButton cmdLogin = new JButton("Login Page");
 		cmdLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
 				if (_login == null) {
-					_login = new login(frame);
+					_login = new Login(frmMainPage);
 				}
 
 				_login.setVisible(true);
-				window.frame.setVisible(false);
+				window.frmMainPage.setVisible(false);
 				// window.frame.setEnabled(false);
 
 			}
 		});
 		cmdLogin.setBounds(52, 19, 140, 29);
-		frame.getContentPane().add(cmdLogin);
+		frmMainPage.getContentPane().add(cmdLogin);
 
-		comboBox = new JComboBox();
-		comboBox.setBounds(51, 72, 153, 27);
-		frame.getContentPane().add(comboBox);
+		cmbTables = new JComboBox();
+		cmbTables.setBounds(333, 72, 153, 27);
+		frmMainPage.getContentPane().add(cmbTables);
+		cmbTables.addItem("employees");
+		cmbTables.addItem("users");
 				
 				scrollPane_1 = new JScrollPane();
 				scrollPane_1.setBounds(40, 195, 277, 94);
-				frame.getContentPane().add(scrollPane_1);
+				frmMainPage.getContentPane().add(scrollPane_1);
 		
 				txt = new JTextArea();
 				scrollPane_1.setViewportView(txt);

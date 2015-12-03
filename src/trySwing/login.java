@@ -27,31 +27,18 @@ import javax.swing.event.MenuKeyEvent;
  
  
 
-public class login extends JFrame {
+public class Login extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField textField;
 	private JTextField textField_1;
 	private JFrame  _frame;
-	private static login frame;
+	 
+	private static Login login;
 	private JButton btnNewButton;
+	private NewUser newUser;
 	
 	 
-
-	/* 
-	 public  static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					  frame = new login(null);
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	} */
-
 	 
 	
 	public void openLastWindow() {
@@ -62,7 +49,8 @@ public class login extends JFrame {
 	}
 	
 	
-	public login(JFrame callingFrame) {
+	public Login(JFrame callingFrame) {
+		setTitle("Login Page");
 		addWindowListener(new WindowAdapter() {
 			 
 			@Override
@@ -71,7 +59,7 @@ public class login extends JFrame {
 			}
 			 
 		});
-		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		 login = this;
 		 
 		_frame = callingFrame;
 		setBounds(100, 100, 450, 300);
@@ -83,13 +71,20 @@ public class login extends JFrame {
 		menuBar.add(mnNewUser);
 		
 		JMenuItem mntmNewUser = new JMenuItem("New User");
+		mntmNewUser.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				newUser = new NewUser(login);
+				newUser.setVisible(true);
+				 setVisible(false);
+			}
+		});
 		mnNewUser.add(mntmNewUser);
 		
 		JMenuItem mntmClose = new JMenuItem("Close");
 		mntmClose.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				btnNewButton.doClick();
-				JOptionPane.showMessageDialog(frame, "ahalan");
+				JOptionPane.showMessageDialog(login, "ahalan");
 			}
 		});
 		mnNewUser.add(mntmClose);
