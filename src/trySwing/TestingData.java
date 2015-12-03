@@ -12,19 +12,22 @@ public class TestingData {
 		int userId = -1;
 
 		String sql;
-		sql = "Select userId from `demo`.`users` where `userName` = ? AND `password` = ? ";
+		sql = "Select userId , password from demo.users  where `userName` = ?  ";
 
 		try {
 			myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/demo", "student", "student");
 
 			PreparedStatement preparedStmt = myConn.prepareStatement(sql);
 			preparedStmt.setString(1, name);
-			preparedStmt.setString(2, password);
+		//	preparedStmt.setString(2, password );
+			 
 			// preparedStmt.execute();
 			  myRs = preparedStmt.executeQuery(sql);
 			while (myRs.next()) {
+				if (password.equals(myRs.getString("password"))) {
 				userId = myRs.getInt("userId");
-
+				
+				}
 			}
 
 		} catch (SQLException e) {
