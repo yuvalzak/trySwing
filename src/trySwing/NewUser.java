@@ -10,6 +10,8 @@ import java.awt.FlowLayout;
 import java.awt.GridBagLayout;
 import java.awt.Color;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+
 import java.awt.GridBagConstraints;
 import java.awt.Font;
 import java.awt.Insets;
@@ -19,7 +21,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Arrays;
+
 import javax.swing.JPasswordField;
+import org.eclipse.wb.swing.FocusTraversalOnArray;
+import java.awt.Component;
 
 public class NewUser extends JFrame {
 
@@ -89,13 +95,23 @@ public class NewUser extends JFrame {
 		JButton btnEnter = new JButton("Enter");
 		btnEnter.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				TestingData data = new TestingData();
-				Boolean b ;
-			//	b = data.makeNewUser(txtFirstName.getText(), passwordField.getPassword().toString());
-				b = data.makeNewUser(txtUserName.getText(), txtPassword.getPassword().toString());
 				
-				_parentFrame.setVisible(true);
-				dispose();
+				if (txtUserName.getText().equals("")   || txtPassword.getPassword().equals("")  ){
+					JOptionPane.showMessageDialog(contentPane, "Enter name and password");
+				} else {
+				
+					TestingData data = new TestingData();
+					Boolean b ;
+					String strFromChar  = new String (  txtPassword.getPassword());
+					smallClass sc = new smallClass("");
+					sc = data.makeNewUser(txtUserName.getText(), strFromChar );
+					if(!sc.getB()) {
+						JOptionPane.showMessageDialog(contentPane, sc.getMsg());
+					} else {
+					_parentFrame.setVisible(true);
+					dispose();
+					}
+				}
 			}
 
 			
@@ -113,8 +129,8 @@ public class NewUser extends JFrame {
 		gbc_btnEnter.gridx = 2;
 		gbc_btnEnter.gridy = 7;
 		contentPane.add(btnEnter, gbc_btnEnter);
+		contentPane.setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{txtUserName, txtPassword, btnEnter}));
 	}
-
-	
+ 
 	 
 }

@@ -1,34 +1,35 @@
 package trySwing;
-
+ 
 import java.sql.*;
+
+import javax.swing.JOptionPane;
+
+import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException;
 
 //* inspired by : www.luv2code.com
 public class TestingData {
 
-	public int LoginUser(String name, String password) {
+	public String LoginUser(String name, String password) {
 		Connection myConn = null;
 		ResultSet myRs = null  ;
+		Statement stmt  ;
 		
+		String userName = "Guest";
 		int userId = -1;
 
 		String sql;
-		sql = "Select userId , password from demo.users  where `userName` = ?  ";
+		sql = "Select userId   from demo.users  where  userName  = '" + name  +  "' and  password = '" + password + "'";
 
 		try {
 			myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/demo", "student", "student");
-
-			PreparedStatement preparedStmt = myConn.prepareStatement(sql);
-			preparedStmt.setString(1, name);
-		//	preparedStmt.setString(2, password );
-			 
-			// preparedStmt.execute();
-			  myRs = preparedStmt.executeQuery(sql);
+ 
+			
+			stmt = myConn.createStatement();
+			myRs = stmt.executeQuery(sql);
 			while (myRs.next()) {
-				if (password.equals(myRs.getString("password"))) {
 				userId = myRs.getInt("userId");
-				
-				}
 			}
+			if (userId > 0){ userName = name; }
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -44,31 +45,37 @@ public class TestingData {
 				e.printStackTrace();
 			}
 		}
-		return userId;
+		return userName;
 	}
 
 	
 	
 	
-	public Boolean makeNewUser(String name, String password) {
+	public smallClass makeNewUser(String name, String password ) {
+		
 		Connection myConn = null;
-
 		String sql;
+		smallClass sc = new smallClass("");
+		
 		sql = "INSERT INTO `demo`.`users` ( `userName`, `password`)  VALUES (?,?)";
-
 		try {
 			myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/demo", "student", "student");
-
 			PreparedStatement preparedStmt = myConn.prepareStatement(sql);
 			preparedStmt.setString(1, name);
 			preparedStmt.setString(2, password);
 			preparedStmt.execute();
 
-			// System.out.println("did insert of new user");
-
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
+			 System.out.println("did insert of new user");
+			 sc.setB(true);  
+ 
+		} catch (    com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException e){
+			sc.setMsg( "a user with this name allready exists !!" );
+			sc.setB(false);  
+		}
+		
+		catch (SQLException e) {
 			e.printStackTrace();
+			sc.setB(false); 
 		}
 
 		finally {
@@ -80,7 +87,7 @@ public class TestingData {
 				}
 			}
 		}
-		return true;
+		return sc;
 	}
 
 	public String getData(String sql, String[] show) throws SQLException {
@@ -118,13 +125,7 @@ public class TestingData {
 
 			this.close(myConn, myStmt, myRs);
 
-			/*
-			 * if (myRs != null) { myRs.close(); }
-			 * 
-			 * if (myStmt != null) { myStmt.close(); }
-			 * 
-			 * if (myConn != null) { myConn.close(); }
-			 */
+			 
 
 		}
 		return sb.toString();

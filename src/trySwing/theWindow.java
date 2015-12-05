@@ -19,10 +19,25 @@ import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 import java.awt.Color;
 import javax.swing.ScrollPaneConstants;
+import javax.swing.JLabel;
 
 public class theWindow {
 
 	private JFrame frmMainPage;
+	public JFrame getFrmMainPage() {
+		return frmMainPage;
+	}
+
+	public void setFrmMainPage(JFrame frmMainPage) {
+		this.frmMainPage = frmMainPage;
+	}
+	
+	public void AfterLogin(String user){
+	   lblUser.setText(user);
+	   window.frmMainPage.setVisible(true);
+	   
+	}
+
 	private int num = 0;
 	private JTextArea txt;
 	private JComboBox cmb;
@@ -31,10 +46,10 @@ public class theWindow {
 	private TestingData testingData;
 	private JComboBox cmbTables;
 	private JScrollPane scrollPane_1;
+	private JLabel lblUser;
+	private JLabel lblHi;
 
-	/**
-	 * Launch the application.
-	 */
+	 
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -123,12 +138,11 @@ public class theWindow {
 			public void actionPerformed(ActionEvent e) {
 
 				if (_login == null) {
-					_login = new Login(frmMainPage);
+					_login = new Login(window);
 				}
 
 				_login.setVisible(true);
 				window.frmMainPage.setVisible(false);
-				// window.frame.setEnabled(false);
 
 			}
 		});
@@ -138,8 +152,8 @@ public class theWindow {
 		cmbTables = new JComboBox();
 		cmbTables.setBounds(333, 72, 153, 27);
 		frmMainPage.getContentPane().add(cmbTables);
-		cmbTables.addItem("employees");
 		cmbTables.addItem("users");
+		cmbTables.addItem("employees");
 				
 				scrollPane_1 = new JScrollPane();
 				scrollPane_1.setBounds(40, 195, 277, 94);
@@ -148,5 +162,23 @@ public class theWindow {
 				txt = new JTextArea();
 				scrollPane_1.setViewportView(txt);
 				txt.setWrapStyleWord(true);
+				
+				lblUser = new JLabel("Guest");
+				lblUser.setBackground(Color.WHITE);
+				lblUser.setBounds(96, 46, 130, 15);
+				frmMainPage.getContentPane().add(lblUser);
+				
+				lblHi = new JLabel("Hi");
+				lblHi.setBackground(Color.WHITE);
+				lblHi.setBounds(62, 46, 34, 15);
+				frmMainPage.getContentPane().add(lblHi);
+	}
+
+	public String getLblUser() {
+		return lblUser.getText();
+	}
+
+	public void setLblUser(String str) {
+		this.lblUser.setText(str);  
 	}
 }
