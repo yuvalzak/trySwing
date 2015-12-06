@@ -26,6 +26,7 @@ import javax.swing.event.MenuKeyListener;
 import javax.swing.event.MenuKeyEvent;
 import javax.swing.JPasswordField;
 import org.eclipse.wb.swing.FocusTraversalOnArray;
+ 
 
 public class Login extends JFrame {
 
@@ -132,6 +133,5 @@ public class Login extends JFrame {
 		});
 		txtPassword.setBounds(111, 118, 134, 28);
 		contentPane.add(txtPassword);
-		contentPane.setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{txtUserName, txtPassword, cmdEnter}));
 	}
 }

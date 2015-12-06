@@ -20,6 +20,7 @@ import java.sql.SQLException;
 import java.awt.Color;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.JLabel;
+import java.awt.Font;
 
 public class theWindow {
 
@@ -27,6 +28,8 @@ public class theWindow {
 	public JFrame getFrmMainPage() {
 		return frmMainPage;
 	}
+	
+	
 
 	public void setFrmMainPage(JFrame frmMainPage) {
 		this.frmMainPage = frmMainPage;
@@ -50,6 +53,7 @@ public class theWindow {
 	private JLabel lblHi;
 
 	 
+	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -146,11 +150,11 @@ public class theWindow {
 
 			}
 		});
-		cmdLogin.setBounds(52, 19, 140, 29);
+		cmdLogin.setBounds(51, 19, 140, 29);
 		frmMainPage.getContentPane().add(cmdLogin);
 
 		cmbTables = new JComboBox();
-		cmbTables.setBounds(333, 72, 153, 27);
+		cmbTables.setBounds(356, 72, 130, 27);
 		frmMainPage.getContentPane().add(cmbTables);
 		cmbTables.addItem("users");
 		cmbTables.addItem("employees");
@@ -160,6 +164,7 @@ public class theWindow {
 				frmMainPage.getContentPane().add(scrollPane_1);
 		
 				txt = new JTextArea();
+				txt.setFont(new Font("Adobe Hebrew", Font.BOLD, 13));
 				scrollPane_1.setViewportView(txt);
 				txt.setWrapStyleWord(true);
 				
@@ -172,6 +177,10 @@ public class theWindow {
 				lblHi.setBackground(Color.WHITE);
 				lblHi.setBounds(62, 46, 34, 15);
 				frmMainPage.getContentPane().add(lblHi);
+				
+				JButton cmdDelete = new JButton("Delete User");
+				cmdDelete.setBounds(51, 299, 140, 29);
+				frmMainPage.getContentPane().add(cmdDelete);
 	}
 
 	public String getLblUser() {

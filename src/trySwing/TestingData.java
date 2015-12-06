@@ -1,6 +1,8 @@
 package trySwing;
  
 import java.sql.*;
+import com.mysql.jdbc.exceptions.*;
+
 
 import javax.swing.JOptionPane;
 
@@ -8,9 +10,19 @@ import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException;
 
 //* inspired by : www.luv2code.com
 public class TestingData {
+static public Connection myConn  = null;
+	
+public TestingData() {
+	     try {
+			myConn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/demo?" + 
+			    "user=student&password=student&useUnicode=true&characterEncoding=UTF-8");
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 
+	}
+	
 	public String LoginUser(String name, String password) {
-		Connection myConn = null;
 		ResultSet myRs = null  ;
 		Statement stmt  ;
 		
@@ -21,8 +33,7 @@ public class TestingData {
 		sql = "Select userId   from demo.users  where  userName  = '" + name  +  "' and  password = '" + password + "'";
 
 		try {
-			myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/demo", "student", "student");
- 
+		 
 			
 			stmt = myConn.createStatement();
 			myRs = stmt.executeQuery(sql);
@@ -53,13 +64,12 @@ public class TestingData {
 	
 	public smallClass makeNewUser(String name, String password ) {
 		
-		Connection myConn = null;
+	//	Connection myConn = null;
 		String sql;
 		smallClass sc = new smallClass("");
 		
 		sql = "INSERT INTO `demo`.`users` ( `userName`, `password`)  VALUES (?,?)";
 		try {
-			myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/demo", "student", "student");
 			PreparedStatement preparedStmt = myConn.prepareStatement(sql);
 			preparedStmt.setString(1, name);
 			preparedStmt.setString(2, password);
@@ -68,8 +78,10 @@ public class TestingData {
 			 System.out.println("did insert of new user");
 			 sc.setB(true);  
  
-		} catch (    com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException e){
-			sc.setMsg( "a user with this name allready exists !!" );
+	 	} catch (    com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException e){
+			
+			 
+			 sc.setMsg( "a user with this name allready exists !!" );
 			sc.setB(false);  
 		}
 		
@@ -81,7 +93,7 @@ public class TestingData {
 		finally {
 			if (myConn != null) {
 				try {
-					myConn.close();
+					this.close(myConn, null);
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
@@ -92,7 +104,6 @@ public class TestingData {
 
 	public String getData(String sql, String[] show) throws SQLException {
 
-		Connection myConn = null;
 		Statement myStmt = null;
 		ResultSet myRs = null;
 
@@ -108,7 +119,6 @@ public class TestingData {
 		StringBuilder sb = new StringBuilder();
 
 		try {
-			myConn = DriverManager.getConnection("jdbc:mysql://localhost:3306/demo", "student", "student");
 			myStmt = myConn.createStatement();
 			myRs = myStmt.executeQuery(sql);
 			while (myRs.next()) {
@@ -155,9 +165,9 @@ public class TestingData {
 			myStmt.close();
 		}
 
-		if (myConn != null) {
+	/*	if (myConn != null) {
 			myConn.close();
-		}
+		}*/
 	}
 
 	private void close(Statement myStmt, ResultSet myRs) throws SQLException {
