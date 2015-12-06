@@ -100,7 +100,7 @@ public class NewUser extends JFrame {
 					JOptionPane.showMessageDialog(contentPane, "Enter name and password");
 				} else {
 				
-					TestingData data = new TestingData();
+					DAO data = new DAO();
 					String strFromChar  = new String (  txtPassword.getPassword());
 					smallClass sc = new smallClass("");
 					sc = data.makeNewUser(txtUserName.getText(), strFromChar );

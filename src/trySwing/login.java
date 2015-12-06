@@ -106,7 +106,7 @@ public class Login extends JFrame {
 		lblPassword.setBounds(111, 90, 61, 16);
 		contentPane.add(lblPassword);
 
-		TestingData data = new TestingData();
+		DAO data = new DAO();
 
 		cmdEnter = new JButton("Enter");
 		cmdEnter.addActionListener(new ActionListener() {

@@ -21,6 +21,8 @@ import java.awt.Color;
 import javax.swing.ScrollPaneConstants;
 import javax.swing.JLabel;
 import java.awt.Font;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class theWindow {
 
@@ -43,10 +45,9 @@ public class theWindow {
 
 	private int num = 0;
 	private JTextArea txt;
-	private JComboBox cmb;
 	private static theWindow window;
 	private static Login _login;
-	private TestingData testingData;
+	private DAO testingData;
 	private JComboBox cmbTables;
 	private JScrollPane scrollPane_1;
 	private JLabel lblUser;
@@ -56,11 +57,12 @@ public class theWindow {
 	
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
+			
 			public void run() {
 				try {
 					window = new theWindow();
 					window.frmMainPage.setVisible(true);
-					window.testingData = new TestingData();
+					window.testingData = new DAO();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -80,6 +82,13 @@ public class theWindow {
 	 */
 	private void initialize() {
 		frmMainPage = new JFrame();
+		frmMainPage.addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				DAO d = new DAO();
+				d.CloseConnection();
+			}
+		});
 		frmMainPage.setTitle("Main Page");
 		frmMainPage.getContentPane().setBackground(new Color(153, 153, 0));
 
@@ -125,17 +134,6 @@ public class theWindow {
 		});
 		btnNewButton.setBounds(358, 19, 117, 29);
 		frmMainPage.getContentPane().add(btnNewButton);
-
-		cmb = new JComboBox();
-
-		cmb.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-
-			}
-		});
-		cmb.setBounds(51, 111, 165, 36);
-		frmMainPage.getContentPane().add(cmb);
 
 		JButton cmdLogin = new JButton("Login Page");
 		cmdLogin.addActionListener(new ActionListener() {

@@ -2,17 +2,15 @@ package trySwing;
  
 import java.sql.*;
 import com.mysql.jdbc.exceptions.*;
-
-
 import javax.swing.JOptionPane;
-
 import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException;
 
 //* inspired by : www.luv2code.com
-public class TestingData {
-static public Connection myConn  = null;
+public class DAO {
+static  public Connection myConn =   null;
+ 
 	
-public TestingData() {
+public DAO() {
 	     try {
 			myConn = DriverManager.getConnection( "jdbc:mysql://localhost:3306/demo?" + 
 			    "user=student&password=student&useUnicode=true&characterEncoding=UTF-8");
@@ -21,6 +19,12 @@ public TestingData() {
 		}
 
 	}
+
+public void CloseConnection(){
+	if (myConn != null){
+		myConn = null;
+	}
+}
 	
 	public String LoginUser(String name, String password) {
 		ResultSet myRs = null  ;
@@ -29,18 +33,25 @@ public TestingData() {
 		String userName = "Guest";
 		int userId = -1;
 
+		PasswordHash pHash = new  PasswordHash();
+		String passwordFromDB = "";
+		 
+		
 		String sql;
-		sql = "Select userId   from demo.users  where  userName  = '" + name  +  "' and  password = '" + password + "'";
+	//	sql = "Select userId , password  from demo.users  where  userName  = '" + name  +  "' and  password = '" + password + "'";
+		sql = "Select userId , password  from demo.users  where  userName    = '" + name  +  "'" ;
 
+		
 		try {
 		 
-			
 			stmt = myConn.createStatement();
 			myRs = stmt.executeQuery(sql);
 			while (myRs.next()) {
 				userId = myRs.getInt("userId");
+				  passwordFromDB = myRs.getString("password");
 			}
-			if (userId > 0){ userName = name; }
+			if (   pHash.validatePassword(password , passwordFromDB)){ userName = name; }  
+		//	if (userId > 0){ userName = name; }
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -64,9 +75,11 @@ public TestingData() {
 	
 	public smallClass makeNewUser(String name, String password ) {
 		
-	//	Connection myConn = null;
 		String sql;
 		smallClass sc = new smallClass("");
+		
+		PasswordHash pHash = new  PasswordHash();
+		password = pHash.createHash(password);
 		
 		sql = "INSERT INTO `demo`.`users` ( `userName`, `password`)  VALUES (?,?)";
 		try {
@@ -102,6 +115,12 @@ public TestingData() {
 		return sc;
 	}
 
+	/**
+	 * @param sql
+	 * @param show
+	 * @return
+	 * @throws SQLException
+	 */
 	public String getData(String sql, String[] show) throws SQLException {
 
 		Statement myStmt = null;
@@ -122,10 +141,6 @@ public TestingData() {
 			myStmt = myConn.createStatement();
 			myRs = myStmt.executeQuery(sql);
 			while (myRs.next()) {
-				// System.out.println(myRs.getString("last_name") + ", " +
-				// myRs.getString("first_name"));
-				// sb.append("\n" + myRs.getString("last_name") + ", " +
-				// myRs.getString("first_name"));
 				sb.append("\n" + appendString(show, myRs));
 			}
 

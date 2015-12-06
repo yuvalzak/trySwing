@@ -1,4 +1,4 @@
-package trySwing;
+package luv2code;
 
 import java.awt.BorderLayout;
 import java.awt.EventQueue;
