@@ -117,7 +117,6 @@ public class NewUser extends JFrame {
 		});
 		
 		txtPassword = new JPasswordField();
-		txtPassword.setRequestFocusEnabled(false);
 		GridBagConstraints gbc_txtPassword = new GridBagConstraints();
 		gbc_txtPassword.insets = new Insets(0, 0, 5, 5);
 		gbc_txtPassword.fill = GridBagConstraints.HORIZONTAL;
@@ -129,6 +128,7 @@ public class NewUser extends JFrame {
 		gbc_btnEnter.gridx = 2;
 		gbc_btnEnter.gridy = 7;
 		contentPane.add(btnEnter, gbc_btnEnter);
+		setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{txtUserName, txtPassword, btnEnter}));
 	}
  
 	 

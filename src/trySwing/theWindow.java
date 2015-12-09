@@ -1,7 +1,6 @@
 package trySwing;
 
 import java.awt.EventQueue;
-import java.awt.List;
 
 import javax.swing.JFrame;
 
@@ -23,9 +22,20 @@ import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import javax.swing.JTextField;
+import java.util.List;
+import java.util.ArrayList;
+import javax.swing.JPanel;
+import java.awt.FlowLayout;
+import javax.swing.SwingConstants;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import java.awt.Rectangle;
+ 
 
 public class theWindow {
 
+	 
 	private JFrame frmMainPage;
 	public JFrame getFrmMainPage() {
 		return frmMainPage;
@@ -47,11 +57,13 @@ public class theWindow {
 	private JTextArea txt;
 	private static theWindow window;
 	private static Login _login;
-	private DAO testingData;
+	private DAO dao;
 	private JComboBox cmbTables;
-	private JScrollPane scrollPane_1;
 	private JLabel lblUser;
 	private JLabel lblHi;
+	private JTable table;
+	private JTextField txtFind;
+	private JScrollPane scrollPane_1;
 
 	 
 	
@@ -62,7 +74,7 @@ public class theWindow {
 				try {
 					window = new theWindow();
 					window.frmMainPage.setVisible(true);
-					window.testingData = new DAO();
+					window.dao = new DAO();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -85,14 +97,15 @@ public class theWindow {
 		frmMainPage.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				DAO d = new DAO();
-				d.CloseConnection();
+				//DAO d = new DAO();
+				//d.CloseConnection();
+				dao.CloseConnection();
 			}
 		});
 		frmMainPage.setTitle("Main Page");
 		frmMainPage.getContentPane().setBackground(new Color(153, 153, 0));
 
-		frmMainPage.setBounds(100, 100, 606, 440);
+		frmMainPage.setBounds(100, 100, 793, 476);
 		frmMainPage.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmMainPage.getContentPane().setLayout(null);
 
@@ -122,7 +135,7 @@ public class theWindow {
 					  break;
 					}
 			
-           txt.setText(window.testingData.getData(sql,show).trim());
+           txt.setText(window.dao.getData(sql,show).trim());
 					 
 				}
 
@@ -132,7 +145,7 @@ public class theWindow {
 
 			}
 		});
-		btnNewButton.setBounds(358, 19, 117, 29);
+		btnNewButton.setBounds(252, 19, 117, 29);
 		frmMainPage.getContentPane().add(btnNewButton);
 
 		JButton cmdLogin = new JButton("Login Page");
@@ -152,19 +165,10 @@ public class theWindow {
 		frmMainPage.getContentPane().add(cmdLogin);
 
 		cmbTables = new JComboBox();
-		cmbTables.setBounds(356, 72, 130, 27);
+		cmbTables.setBounds(249, 60, 130, 27);
 		frmMainPage.getContentPane().add(cmbTables);
 		cmbTables.addItem("users");
 		cmbTables.addItem("employees");
-				
-				scrollPane_1 = new JScrollPane();
-				scrollPane_1.setBounds(40, 195, 277, 94);
-				frmMainPage.getContentPane().add(scrollPane_1);
-		
-				txt = new JTextArea();
-				txt.setFont(new Font("Adobe Hebrew", Font.BOLD, 13));
-				scrollPane_1.setViewportView(txt);
-				txt.setWrapStyleWord(true);
 				
 				lblUser = new JLabel("Guest");
 				lblUser.setBackground(Color.WHITE);
@@ -176,9 +180,101 @@ public class theWindow {
 				lblHi.setBounds(62, 46, 34, 15);
 				frmMainPage.getContentPane().add(lblHi);
 				
-				JButton cmdDelete = new JButton("Delete User");
-				cmdDelete.setBounds(51, 299, 140, 29);
-				frmMainPage.getContentPane().add(cmdDelete);
+				scrollPane_1 = new JScrollPane();
+				scrollPane_1.setBounds(51, 260, 615, 170);
+				frmMainPage.getContentPane().add(scrollPane_1);
+				
+				table = new JTable();
+				table.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+					//	System.out.println(table.getValueAt(table.getSelectedRow(), 0).toString());
+						txtFind.setText(table.getValueAt(table.getSelectedRow(), 0).toString()) ;
+					}
+				});
+				// this option gives double entries, but with getValueIsAdjusting acts like 
+			    //  the mouseClick
+				
+				/* table.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
+			        public void valueChanged(ListSelectionEvent event) {
+			        	if (event.getValueIsAdjusting()) { 
+			            System.out.println(table.getValueAt(table.getSelectedRow(), 0).toString());
+			        }}
+			    }); */
+				scrollPane_1.setViewportView(table);
+						
+						JScrollPane scrollPane = new JScrollPane();
+						scrollPane.setBounds(408, 19, 362, 155);
+						frmMainPage.getContentPane().add(scrollPane);
+						
+						JPanel panel = new JPanel();
+						FlowLayout flowLayout = (FlowLayout) panel.getLayout();
+						flowLayout.setAlignment(FlowLayout.LEFT);
+						panel.setBackground(Color.PINK);
+						panel.setBounds(51, 211, 615, 37);
+						frmMainPage.getContentPane().add(panel);
+						
+						JLabel lblNewLabel = new JLabel("Find");
+						panel.add(lblNewLabel);
+						lblNewLabel.setFont(new Font("SansSerif", Font.PLAIN, 20));
+						
+						txtFind = new JTextField();
+						panel.add(txtFind);
+						txtFind.setColumns(10);
+						
+						JButton cmdClear = new JButton("X");
+						cmdClear.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								txtFind.setText("");
+							}
+						});
+						panel.add(cmdClear);
+						
+						JButton cmdGetData = new JButton("Get Data");
+						panel.add(cmdGetData);
+						
+						JButton cmdDelete = new JButton("Delete User");
+						cmdDelete.setHorizontalAlignment(SwingConstants.RIGHT);
+						cmdDelete.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+							int rt = 	JOptionPane.showConfirmDialog(null, "Delete this User? ",txtFind.getText(), JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null)	; 
+							if(	rt == JOptionPane.YES_OPTION) {
+							if(    	dao.DeleteUser(txtFind.getText()) == true) {
+								cmdClear.doClick();
+								cmdGetData.doClick();
+							}}
+								
+							}
+						});
+						panel.add(cmdDelete);
+						
+								txt = new JTextArea();
+								txt.setBounds(505, 22, 265, 82);
+								frmMainPage.getContentPane().add(txt);
+								txt.setFont(new Font("Adobe Hebrew", Font.BOLD, 13));
+								txt.setWrapStyleWord(true);
+						cmdGetData.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+							List<User> lstUser = null;	
+							try {
+								
+							 
+						     	String moreSql;
+								if (txtFind.getText().length() > 0 ) {
+								  moreSql = " Where userName like '" + txtFind.getText() + "%'";
+								} else {
+									moreSql = "";
+								}
+								lstUser =  window.dao.findUserData(moreSql);
+							} catch (SQLException e1) {
+								e1.printStackTrace();
+							}	
+							usersTableModel model = new usersTableModel(lstUser);
+						    table.setModel(model);
+							
+								
+							}
+						});
 	}
 
 	public String getLblUser() {
