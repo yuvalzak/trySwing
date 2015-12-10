@@ -33,10 +33,10 @@ public class NewUser extends JFrame {
 	private JTextField txtUserName;
     private JFrame _parentFrame;
     private JPasswordField txtPassword;
-    
+    private User loggedUser = null;
 	 
 	 
-	public NewUser(JFrame  parentFrame) {
+	public NewUser(JFrame  parentFrame, User loggedUser) {
 		setTitle("Enter New User");
 		addWindowListener(new WindowAdapter() {
 			@Override
@@ -46,6 +46,8 @@ public class NewUser extends JFrame {
 			}
 		});
 		  _parentFrame = parentFrame;
+		  this.loggedUser = loggedUser;
+		 
 		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);
 		contentPane = new JPanel();
@@ -92,8 +94,8 @@ public class NewUser extends JFrame {
 		gbc_lblPassword.gridy = 4;
 		contentPane.add(lblPassword, gbc_lblPassword);
 		
-		JButton btnEnter = new JButton("Enter");
-		btnEnter.addActionListener(new ActionListener() {
+		JButton cmdEnter = new JButton("Enter");
+		cmdEnter.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				
 				if (txtUserName.getText().equals("")   || txtPassword.getPassword().equals("")  ){
@@ -102,13 +104,12 @@ public class NewUser extends JFrame {
 				
 					DAO data = new DAO();
 					String strFromChar  = new String (  txtPassword.getPassword());
-					smallClass sc = new smallClass("");
-					sc = data.makeNewUser(txtUserName.getText(), strFromChar );
-					if(!sc.getB()) {
-						JOptionPane.showMessageDialog(contentPane, sc.getMsg());
-					} else {
-					_parentFrame.setVisible(true);
-					dispose();
+					smallClass sc = new smallClass("",null);
+					sc = data.makeNewUser(txtUserName.getText(), strFromChar, loggedUser.getUserId()  );
+					JOptionPane.showMessageDialog(contentPane, sc.getMsg());
+					if(sc.getUser() != null) {
+						_parentFrame.setVisible(true);
+						dispose();
 					}
 				}
 			}
@@ -117,18 +118,23 @@ public class NewUser extends JFrame {
 		});
 		
 		txtPassword = new JPasswordField();
+		txtPassword.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				cmdEnter.doClick();
+			}
+		});
 		GridBagConstraints gbc_txtPassword = new GridBagConstraints();
 		gbc_txtPassword.insets = new Insets(0, 0, 5, 5);
 		gbc_txtPassword.fill = GridBagConstraints.HORIZONTAL;
 		gbc_txtPassword.gridx = 2;
 		gbc_txtPassword.gridy = 4;
 		contentPane.add(txtPassword, gbc_txtPassword);
-		GridBagConstraints gbc_btnEnter = new GridBagConstraints();
-		gbc_btnEnter.insets = new Insets(0, 0, 0, 5);
-		gbc_btnEnter.gridx = 2;
-		gbc_btnEnter.gridy = 7;
-		contentPane.add(btnEnter, gbc_btnEnter);
-		setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{txtUserName, txtPassword, btnEnter}));
+		GridBagConstraints gbc_cmdEnter = new GridBagConstraints();
+		gbc_cmdEnter.insets = new Insets(0, 0, 0, 5);
+		gbc_cmdEnter.gridx = 2;
+		gbc_cmdEnter.gridy = 7;
+		contentPane.add(cmdEnter, gbc_cmdEnter);
+		setFocusTraversalPolicy(new FocusTraversalOnArray(new Component[]{txtUserName, txtPassword, cmdEnter}));
 	}
  
 	 

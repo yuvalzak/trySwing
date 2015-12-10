@@ -34,8 +34,8 @@ import java.awt.Rectangle;
  
 
 public class theWindow {
-
-	 
+    private User loggedUser = null;
+	private User focusUser = null; 
 	private JFrame frmMainPage;
 	public JFrame getFrmMainPage() {
 		return frmMainPage;
@@ -47,8 +47,9 @@ public class theWindow {
 		this.frmMainPage = frmMainPage;
 	}
 	
-	public void AfterLogin(String user){
-	   lblUser.setText(user);
+	public void AfterLogin(User user){
+      	loggedUser = user;
+	   lblUser.setText(user.getName());
 	   window.frmMainPage.setVisible(true);
 	   
 	}
@@ -64,6 +65,7 @@ public class theWindow {
 	private JTable table;
 	private JTextField txtFind;
 	private JScrollPane scrollPane_1;
+	private JTable logTable;
 
 	 
 	
@@ -105,7 +107,7 @@ public class theWindow {
 		frmMainPage.setTitle("Main Page");
 		frmMainPage.getContentPane().setBackground(new Color(153, 153, 0));
 
-		frmMainPage.setBounds(100, 100, 793, 476);
+		frmMainPage.setBounds(100, 100, 793, 621);
 		frmMainPage.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmMainPage.getContentPane().setLayout(null);
 
@@ -133,6 +135,10 @@ public class theWindow {
 					  show = new String[] {"userName", "password" };
 					  sql = "select * from users";
 					  break;
+					case "logFiles" :
+						  show = new String[] {"loggedUser", "actionTaken" , "theDate"};
+						  sql = "select * from logFiles";
+						  break;
 					}
 			
            txt.setText(window.dao.getData(sql,show).trim());
@@ -167,6 +173,7 @@ public class theWindow {
 		cmbTables = new JComboBox();
 		cmbTables.setBounds(249, 60, 130, 27);
 		frmMainPage.getContentPane().add(cmbTables);
+		cmbTables.addItem("logFiles");
 		cmbTables.addItem("users");
 		cmbTables.addItem("employees");
 				
@@ -181,7 +188,7 @@ public class theWindow {
 				frmMainPage.getContentPane().add(lblHi);
 				
 				scrollPane_1 = new JScrollPane();
-				scrollPane_1.setBounds(51, 260, 615, 170);
+				scrollPane_1.setBounds(51, 260, 719, 170);
 				frmMainPage.getContentPane().add(scrollPane_1);
 				
 				table = new JTable();
@@ -189,7 +196,14 @@ public class theWindow {
 					@Override
 					public void mouseClicked(MouseEvent e) {
 					//	System.out.println(table.getValueAt(table.getSelectedRow(), 0).toString());
-						txtFind.setText(table.getValueAt(table.getSelectedRow(), 0).toString()) ;
+					//	txtFind.setText(table.getValueAt(table.getSelectedRow(), 0).toString()) ;
+						 int id = Integer.parseInt( table.getValueAt(table.getSelectedRow(), 1).toString())  ;
+				         String name = table.getValueAt(table.getSelectedRow(), 0).toString()  ;
+			     	     String password = table.getValueAt(table.getSelectedRow(), 2).toString()  ;
+			         	txtFind.setText(name);
+			     	 
+						focusUser = new User( name,password, id);
+						
 					}
 				});
 				// this option gives double entries, but with getValueIsAdjusting acts like 
@@ -211,7 +225,7 @@ public class theWindow {
 						FlowLayout flowLayout = (FlowLayout) panel.getLayout();
 						flowLayout.setAlignment(FlowLayout.LEFT);
 						panel.setBackground(Color.PINK);
-						panel.setBounds(51, 211, 615, 37);
+						panel.setBounds(51, 211, 719, 37);
 						frmMainPage.getContentPane().add(panel);
 						
 						JLabel lblNewLabel = new JLabel("Find");
@@ -239,13 +253,32 @@ public class theWindow {
 							public void actionPerformed(ActionEvent e) {
 							int rt = 	JOptionPane.showConfirmDialog(null, "Delete this User? ",txtFind.getText(), JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null)	; 
 							if(	rt == JOptionPane.YES_OPTION) {
-							if(    	dao.DeleteUser(txtFind.getText()) == true) {
+							if(    	dao.DeleteUser(txtFind.getText(),   loggedUser.getUserId()) == true) {
 								cmdClear.doClick();
 								cmdGetData.doClick();
 							}}
 								
 							}
 						});
+						
+						JButton cmdAllLogFiles = new JButton("Show All Logs");
+						cmdAllLogFiles.addActionListener(new ActionListener() {
+							public void actionPerformed(ActionEvent e) {
+								
+								List<LogFile> lstLogFiles = null;	
+								if (focusUser != null ) {
+								try {
+									lstLogFiles =  window.dao.showLogFiles(focusUser.getUserId());
+								} catch (SQLException e1) {
+									e1.printStackTrace();
+								}	
+								LogFileTableModel model = new LogFileTableModel(lstLogFiles);
+							    logTable.setModel(model);
+							 
+								}	
+							}
+						});
+						panel.add(cmdAllLogFiles);
 						panel.add(cmdDelete);
 						
 								txt = new JTextArea();
@@ -253,12 +286,17 @@ public class theWindow {
 								frmMainPage.getContentPane().add(txt);
 								txt.setFont(new Font("Adobe Hebrew", Font.BOLD, 13));
 								txt.setWrapStyleWord(true);
+								
+								JScrollPane scrollPane_2 = new JScrollPane();
+								scrollPane_2.setBounds(51, 450, 719, 119);
+								frmMainPage.getContentPane().add(scrollPane_2);
+								
+								logTable = new JTable();
+								scrollPane_2.setViewportView(logTable);
 						cmdGetData.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e) {
 							List<User> lstUser = null;	
 							try {
-								
-							 
 						     	String moreSql;
 								if (txtFind.getText().length() > 0 ) {
 								  moreSql = " Where userName like '" + txtFind.getText() + "%'";

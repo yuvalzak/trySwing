@@ -1,9 +1,10 @@
 package trySwing;
 
 import java.sql.*;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-
 import com.mysql.jdbc.exceptions.*;
 import javax.swing.JOptionPane;
 import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException;
@@ -20,6 +21,67 @@ public class DAO {
 			e.printStackTrace();
 		}
 
+	}
+	
+
+	public void makeLogEntry(int id, String actionTaken) {
+
+		String sql = "INSERT INTO demo.logFiles ( `loggedUser`, `actionTaken`, `theDate`)  VALUES (?,?,?)";
+		try {
+			PreparedStatement preparedStmt = conn.prepareStatement(sql);
+			preparedStmt.setInt(1, id);
+			preparedStmt.setString(2, actionTaken);
+			Date d = new Date();
+			String dd = new SimpleDateFormat("yyyy-MM-dd   HH:mm:ss").format(d );
+			preparedStmt.setString (3,  dd);
+			preparedStmt.execute();
+			//System.out.println("logged it !!");
+		}
+		catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	public List<LogFile> showLogFiles(int userId) throws SQLException {
+ 
+		Statement stmt = null;
+		ResultSet rs = null;
+		List<LogFile> lstLogs = new ArrayList<LogFile>();
+
+		String sql = "select id, loggedUser, actionTaken, theDate from demo.logFiles  where " +
+		    " loggedUser =  " + userId ;
+
+		try {
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(sql);
+			while (rs.next()) {
+				lstLogs.add(RS_to_Log(rs));
+			}
+
+		} catch (Exception exc) {
+			exc.printStackTrace();
+		} finally {
+
+			this.close(conn, stmt, rs);
+		}
+		return lstLogs;
+	}
+
+
+	private LogFile RS_to_Log(ResultSet rs) {
+		LogFile aLog = new LogFile();
+		try {
+			aLog.setId(rs.getInt("id")); 
+			aLog.setLoggedUserId(rs.getInt("loggedUser"));	 
+			aLog.setActionTaken(rs.getString("actionTaken")); 
+			aLog.setTheDate(rs.getString("theDate"));
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		return aLog;
 	}
 
 	public List<User> findUserData(String moreSql) throws SQLException {
@@ -65,19 +127,15 @@ public class DAO {
 		}
 	}
 
-	public String LoginUser(String name, String password) {
+	public User LoginUser(String name, String password) {
 		ResultSet myRs = null;
 		Statement stmt;
-
-		String userName = "Guest";
 		int userId = -1;
+		User user = null;
 
 		PasswordHash pHash = new PasswordHash();
 		String passwordFromDB = "";
-
 		String sql;
-		// sql = "Select userId , password from demo.users where userName = '" +
-		// name + "' and password = '" + password + "'";
 		sql = "Select userId , password  from demo.users  where  userName    = '" + name + "'";
 
 		try {
@@ -89,9 +147,9 @@ public class DAO {
 				passwordFromDB = myRs.getString("password");
 			}
 			if (pHash.validatePassword(password, passwordFromDB)) {
-				userName = name;
+				 user = new User(name, passwordFromDB, userId);
 			}
-			// if (userId > 0){ userName = name; }
+		 
 
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
@@ -107,13 +165,14 @@ public class DAO {
 				e.printStackTrace();
 			}
 		}
-		return userName;
+		return user;
 	}
 
-	public smallClass makeNewUser(String name, String password) {
+	public smallClass makeNewUser(String name, String password, int loggedUserId) {
 
 		String sql;
-		smallClass sc = new smallClass("");
+		smallClass sc = new smallClass("",null);
+		User user = null;
 
 		PasswordHash pHash = new PasswordHash();
 		password = pHash.createHash(password);
@@ -126,28 +185,23 @@ public class DAO {
 			preparedStmt.execute();
 
 			System.out.println("did insert of new user");
-			sc.setB(true);
+			  user = new User(name, password);
+			sc = new smallClass("did insert of new user", user);
+			 
+			makeLogEntry(loggedUserId, "Added new user: " + name );
 
 		} catch (com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException e) {
 
 			sc.setMsg("a user with this name allready exists !!");
-			sc.setB(false);
+			 
 		}
 
 		catch (SQLException e) {
 			e.printStackTrace();
-			sc.setB(false);
+			 
 		}
 
-		finally {
-			if (conn != null) {
-				try {
-					this.close(conn, null);
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-		}
+		 
 		return sc;
 	}
 
@@ -224,7 +278,7 @@ public class DAO {
 	
 	
 
-	public Boolean DeleteUser(String name ) {
+	public Boolean DeleteUser(String name, int loggedUserId ) {
 
 		String sql;
 		sql = "Delete From `demo`.`users`  where  `userName` = '"  + name + "'";
@@ -235,7 +289,9 @@ public class DAO {
 			stmt = conn.createStatement();
 			int rt  = stmt.executeUpdate(sql);
 			if (rt == 0) { Return = false ;}
-			else { Return = true ;}
+			else { Return = true ;
+			 makeLogEntry(loggedUserId, "Deleted: " + name);
+			}
 		}
 		 
 		catch (SQLException e) {

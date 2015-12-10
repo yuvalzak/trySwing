@@ -33,6 +33,7 @@ public class Login extends JFrame {
 	private JPanel contentPane;
 	private JTextField txtUserName;
 	private JFrame _frame;
+    private User user = null;
 
 	private static Login login;
 	private JButton cmdEnter;
@@ -72,9 +73,11 @@ public class Login extends JFrame {
 		JMenuItem mntmNewUser = new JMenuItem("New User");
 		mntmNewUser.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				newUser = new NewUser(login);
-				newUser.setVisible(true);
-				setVisible(false);
+				if(user != null ){
+					newUser = new NewUser(login, user);
+					newUser.setVisible(true);
+					setVisible(false);
+				}
 			}
 		});
 		mnNewUser.add(mntmNewUser);
@@ -112,10 +115,10 @@ public class Login extends JFrame {
 		cmdEnter.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String strFromChar = new String(txtPassword.getPassword());
-				String LogInTry = data.LoginUser(txtUserName.getText(), strFromChar);
-				if (LogInTry.compareTo("Guest") != 0)
+				  user = data.LoginUser(txtUserName.getText(), strFromChar);
+				if (user.getUserId() > 0 )
 				{
-					mainWindow.AfterLogin(LogInTry);
+					mainWindow.AfterLogin(user);
 					dispose(); // Destroy the JFrame object
 				} else
 					JOptionPane.showMessageDialog(login, "no user with this password !!");

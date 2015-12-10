@@ -1,8 +1,9 @@
 package trySwing;
 
-public class smallClass {
+public class smallClass extends User {
   private String msg;
-  private Boolean b;
+  private User user;
+    
 
 public String getMsg() {
 	return msg;
@@ -12,15 +13,14 @@ public void setMsg(String msg) {
 	this.msg = msg;
 }
   
-  public smallClass(String msg){
+  public smallClass(String msg, User user){
+	  super(user);
+	  this.user = user;
 	  this.msg = msg;
   }
-
-public Boolean getB() {
-	return b;
-}
-
-public void setB(Boolean b) {
-	this.b = b;
-}
+ 
+  public User getUser(){
+	  return user;
+	  
+  }
 }
