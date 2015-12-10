@@ -104,7 +104,7 @@ public class NewUser extends JFrame {
 				
 					DAO data = new DAO();
 					String strFromChar  = new String (  txtPassword.getPassword());
-					smallClass sc = new smallClass("",null);
+					UserAndMsg sc = new UserAndMsg("",null);
 					sc = data.makeNewUser(txtUserName.getText(), strFromChar, loggedUser.getUserId()  );
 					JOptionPane.showMessageDialog(contentPane, sc.getMsg());
 					if(sc.getUser() != null) {

@@ -19,7 +19,12 @@ public class LogFileTableModel extends AbstractTableModel {
 	}
 
 	private List<LogFile> arrLogFiles  ;
-	
+    
+	@Override
+	public String getColumnName(int columnIndex) {
+	    
+	    return columNames[columnIndex];
+	}
 	
 	@Override
 	public int getRowCount() {
@@ -36,7 +41,7 @@ public class LogFileTableModel extends AbstractTableModel {
 		LogFile aLogFile = arrLogFiles.get(row );
 		switch (col) {
 		case ID_COL:  return aLogFile.getId();
-		case LOGGED_USER_ID_COL: return aLogFile.getId(); 
+		case LOGGED_USER_ID_COL: return aLogFile.getLoggedUserId();
 		case ACTION_TAKEN_COL: return aLogFile.getActionTaken();
 		case ADATE_COL: return aLogFile.getTheDate();
 		

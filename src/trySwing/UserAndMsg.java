@@ -1,6 +1,6 @@
 package trySwing;
 
-public class smallClass extends User {
+public class UserAndMsg    {
   private String msg;
   private User user;
     
@@ -13,8 +13,8 @@ public void setMsg(String msg) {
 	this.msg = msg;
 }
   
-  public smallClass(String msg, User user){
-	  super(user);
+  public UserAndMsg(String msg, User user){
+	  
 	  this.user = user;
 	  this.msg = msg;
   }

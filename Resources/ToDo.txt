@@ -1,0 +1,10 @@
+to do file
+//////////
+
+add change password option.
+add users as administrators.
+add picture ?
+add info on a certain user. all transactions done on him.
+
+
+

@@ -20,7 +20,11 @@ public class usersTableModel extends AbstractTableModel {
 
 	private List<User> arrUsers  ;
 	
-	
+	public String getColumnName(int columnIndex) {
+	    
+	    return columNames[columnIndex];
+	}
+
 	@Override
 	public int getRowCount() {
         return arrUsers.size();

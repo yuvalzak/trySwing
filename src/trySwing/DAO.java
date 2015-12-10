@@ -168,10 +168,10 @@ public class DAO {
 		return user;
 	}
 
-	public smallClass makeNewUser(String name, String password, int loggedUserId) {
+	public UserAndMsg makeNewUser(String name, String password, int loggedUserId) {
 
 		String sql;
-		smallClass sc = new smallClass("",null);
+		UserAndMsg userAndMsg = new UserAndMsg("",null);
 		User user = null;
 
 		PasswordHash pHash = new PasswordHash();
@@ -186,13 +186,13 @@ public class DAO {
 
 			System.out.println("did insert of new user");
 			  user = new User(name, password);
-			sc = new smallClass("did insert of new user", user);
+			userAndMsg = new UserAndMsg("did insert of new user", user);
 			 
 			makeLogEntry(loggedUserId, "Added new user: " + name );
 
 		} catch (com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException e) {
 
-			sc.setMsg("a user with this name allready exists !!");
+			userAndMsg.setMsg("a user with this name allready exists !!");
 			 
 		}
 
@@ -202,7 +202,7 @@ public class DAO {
 		}
 
 		 
-		return sc;
+		return userAndMsg;
 	}
 
 	public String getData(String sql, String[] show) throws SQLException {

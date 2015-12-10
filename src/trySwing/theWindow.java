@@ -58,14 +58,13 @@ public class theWindow {
 	private JTextArea txt;
 	private static theWindow window;
 	private static Login _login;
-	private DAO dao;
+	public DAO dao;
 	private JComboBox cmbTables;
 	private JLabel lblUser;
 	private JLabel lblHi;
 	private JTable table;
 	private JTextField txtFind;
 	private JScrollPane scrollPane_1;
-	private JTable logTable;
 
 	 
 	
@@ -264,18 +263,8 @@ public class theWindow {
 						JButton cmdAllLogFiles = new JButton("Show All Logs");
 						cmdAllLogFiles.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e) {
-								
-								List<LogFile> lstLogFiles = null;	
-								if (focusUser != null ) {
-								try {
-									lstLogFiles =  window.dao.showLogFiles(focusUser.getUserId());
-								} catch (SQLException e1) {
-									e1.printStackTrace();
-								}	
-								LogFileTableModel model = new LogFileTableModel(lstLogFiles);
-							    logTable.setModel(model);
-							 
-								}	
+								ShowLogs frame = new ShowLogs(focusUser, window);
+								frame.setVisible(true);
 							}
 						});
 						panel.add(cmdAllLogFiles);
@@ -286,13 +275,6 @@ public class theWindow {
 								frmMainPage.getContentPane().add(txt);
 								txt.setFont(new Font("Adobe Hebrew", Font.BOLD, 13));
 								txt.setWrapStyleWord(true);
-								
-								JScrollPane scrollPane_2 = new JScrollPane();
-								scrollPane_2.setBounds(51, 450, 719, 119);
-								frmMainPage.getContentPane().add(scrollPane_2);
-								
-								logTable = new JTable();
-								scrollPane_2.setViewportView(logTable);
 						cmdGetData.addActionListener(new ActionListener() {
 							public void actionPerformed(ActionEvent e) {
 							List<User> lstUser = null;	

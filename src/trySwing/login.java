@@ -116,7 +116,7 @@ public class Login extends JFrame {
 			public void actionPerformed(ActionEvent e) {
 				String strFromChar = new String(txtPassword.getPassword());
 				  user = data.LoginUser(txtUserName.getText(), strFromChar);
-				if (user.getUserId() > 0 )
+				if (user != null   )
 				{
 					mainWindow.AfterLogin(user);
 					dispose(); // Destroy the JFrame object
