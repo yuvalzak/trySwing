@@ -74,8 +74,10 @@ public class theWindow {
 			public void run() {
 				try {
 					window = new theWindow();
-					window.frmMainPage.setVisible(true);
+					//window.frmMainPage.setVisible(true);
 					window.dao = new DAO();
+					
+					openLoginPage();
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -157,14 +159,11 @@ public class theWindow {
 		cmdLogin.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 
-				if (_login == null) {
-					_login = new Login(window);
-				}
-
-				_login.setVisible(true);
-				window.frmMainPage.setVisible(false);
+				openLoginPage();
 
 			}
+
+			
 		});
 		cmdLogin.setBounds(51, 19, 140, 29);
 		frmMainPage.getContentPane().add(cmdLogin);
@@ -295,6 +294,16 @@ public class theWindow {
 								
 							}
 						});
+	}
+	
+	
+	private static void openLoginPage() {
+		if (_login == null) {
+			_login = new Login(window);
+		}
+
+		_login.setVisible(true);
+		window.frmMainPage.setVisible(false);
 	}
 
 	public String getLblUser() {
