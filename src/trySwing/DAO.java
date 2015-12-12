@@ -90,7 +90,7 @@ public class DAO {
 		ResultSet rs = null;
 		List<User> lstUsers = new ArrayList<User>();
 
-		String sql = "select userName, password, userId from users "  + moreSql ;
+		String sql = "select userName, password, userId, isAdmin from users "  + moreSql ;
 
 		try {
 			stmt = conn.createStatement();
@@ -109,11 +109,12 @@ public class DAO {
 	}
 
 	private User RS_to_User(ResultSet rs) {
-		User aUser = new User("", "");
+		User aUser = new User("", "", false);
 		try {
 			aUser.setName(rs.getString("userName"));
 			aUser.setPassword(rs.getString("password"));
 			aUser.setUserId(rs.getInt("userId"));
+			aUser.setIsAdmin (rs.getBoolean("isAdmin"));
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -136,18 +137,20 @@ public class DAO {
 		PasswordHash pHash = new PasswordHash();
 		String passwordFromDB = "";
 		String sql;
-		sql = "Select userId , password  from demo.users  where  userName    = '" + name + "'";
+		sql = "Select userId , password, isAdmin  from demo.users  where  userName    = '" + name + "'";
 
 		try {
 
 			stmt = conn.createStatement();
 			myRs = stmt.executeQuery(sql);
+			Boolean isAdmin = null;
 			while (myRs.next()) {
 				userId = myRs.getInt("userId");
 				passwordFromDB = myRs.getString("password");
+				  isAdmin = myRs.getBoolean("isAdmin");
 			}
 			if (pHash.validatePassword(password, passwordFromDB)) {
-				 user = new User(name, passwordFromDB, userId);
+				 user = new User(name, passwordFromDB, userId, isAdmin );
 			}
 		 
 
@@ -168,7 +171,7 @@ public class DAO {
 		return user;
 	}
 
-	public UserAndMsg makeNewUser(String name, String password, int loggedUserId) {
+	public UserAndMsg makeNewUser(String name, String password, int loggedUserId, Boolean isAdmin) {
 
 		String sql;
 		UserAndMsg userAndMsg = new UserAndMsg("",null);
@@ -177,31 +180,23 @@ public class DAO {
 		PasswordHash pHash = new PasswordHash();
 		password = pHash.createHash(password);
 
-		sql = "INSERT INTO `demo`.`users` ( `userName`, `password`)  VALUES (?,?)";
+		sql = "INSERT INTO `demo`.`users` ( `userName`, `password`, `isAdmin` )  VALUES (?,?,?)";
 		try {
 			PreparedStatement preparedStmt = conn.prepareStatement(sql);
 			preparedStmt.setString(1, name);
 			preparedStmt.setString(2, password);
+			preparedStmt.setBoolean(3, isAdmin);
 			preparedStmt.execute();
-
 			System.out.println("did insert of new user");
-			  user = new User(name, password);
+		    user = new User(name, password, isAdmin);
 			userAndMsg = new UserAndMsg("did insert of new user", user);
-			 
 			makeLogEntry(loggedUserId, "Added new user: " + name );
-
 		} catch (com.mysql.jdbc.exceptions.jdbc4.MySQLIntegrityConstraintViolationException e) {
-
 			userAndMsg.setMsg("a user with this name allready exists !!");
-			 
 		}
-
 		catch (SQLException e) {
 			e.printStackTrace();
-			 
 		}
-
-		 
 		return userAndMsg;
 	}
 

@@ -26,6 +26,7 @@ import java.util.Arrays;
 import javax.swing.JPasswordField;
 import org.eclipse.wb.swing.FocusTraversalOnArray;
 import java.awt.Component;
+import javax.swing.JCheckBox;
 
 public class NewUser extends JFrame {
 
@@ -34,6 +35,7 @@ public class NewUser extends JFrame {
     private JFrame _parentFrame;
     private JPasswordField txtPassword;
     private User loggedUser = null;
+	private JCheckBox chkBox;
 	 
 	 
 	public NewUser(JFrame  parentFrame, User loggedUser) {
@@ -105,7 +107,7 @@ public class NewUser extends JFrame {
 					DAO data = new DAO();
 					String strFromChar  = new String (  txtPassword.getPassword());
 					UserAndMsg sc = new UserAndMsg("",null);
-					sc = data.makeNewUser(txtUserName.getText(), strFromChar, loggedUser.getUserId()  );
+					sc = data.makeNewUser(txtUserName.getText(), strFromChar, loggedUser.getUserId() , chkBox.isSelected() );
 					JOptionPane.showMessageDialog(contentPane, sc.getMsg());
 					if(sc.getUser() != null) {
 						_parentFrame.setVisible(true);
@@ -129,6 +131,18 @@ public class NewUser extends JFrame {
 		gbc_txtPassword.gridx = 2;
 		gbc_txtPassword.gridy = 4;
 		contentPane.add(txtPassword, gbc_txtPassword);
+		
+		chkBox = new JCheckBox("is Admin");
+		chkBox.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+			}
+		});
+		GridBagConstraints gbc_chkBox = new GridBagConstraints();
+		gbc_chkBox.insets = new Insets(0, 0, 5, 5);
+		gbc_chkBox.gridx = 1;
+		gbc_chkBox.gridy = 6;
+		contentPane.add(chkBox, gbc_chkBox);
 		GridBagConstraints gbc_cmdEnter = new GridBagConstraints();
 		gbc_cmdEnter.insets = new Insets(0, 0, 0, 5);
 		gbc_cmdEnter.gridx = 2;

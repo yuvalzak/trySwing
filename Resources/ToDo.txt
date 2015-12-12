@@ -2,9 +2,9 @@ to do file
 //////////
 
 add change password option.
-add users as administrators.
+----add users as administrators.
 add picture ?
 add info on a certain user. all transactions done on him.
-
-
+-----why no column names in table ?   - added table to scrollpane.
+why getData not showing all users ?
 

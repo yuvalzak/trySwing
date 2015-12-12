@@ -18,6 +18,9 @@ public class ShowLogs extends JFrame {
    private User focusUser = null;
    private theWindow window = null;
    private JTable table;
+   /**
+    * @wbp.nonvisual location=549,601
+    */
 	 
 	public ShowLogs(User focusUser, theWindow window) {
 		setTitle("Log of Transactions");
@@ -34,6 +37,7 @@ public class ShowLogs extends JFrame {
 		table = new JTable();
 		table.setBackground(new Color(204, 153, 0));
 		contentPane.add(table, BorderLayout.CENTER);
+		add(new JScrollPane(table));  // this is to see the column names
 		doShowLogs();
 	}
 

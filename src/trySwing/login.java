@@ -40,6 +40,7 @@ public class Login extends JFrame {
 	private NewUser newUser;
 	private JPasswordField txtPassword;
 	private theWindow _mainWindow = null;
+	private DAO data = null;
 
 	public void openLastWindow() {
 
@@ -55,7 +56,8 @@ public class Login extends JFrame {
 
 			@Override
 			public void windowClosing(WindowEvent e) {
-				openLastWindow();
+				//openLastWindow();
+			data.CloseConnection();
 			}
 
 		});
@@ -63,6 +65,7 @@ public class Login extends JFrame {
 
 		_frame = _mainWindow.getFrmMainPage(); // callingFrame;
 		setBounds(100, 100, 450, 300);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
@@ -109,7 +112,7 @@ public class Login extends JFrame {
 		lblPassword.setBounds(111, 90, 61, 16);
 		contentPane.add(lblPassword);
 
-		DAO data = new DAO();
+		  data = new DAO();
 
 		cmdEnter = new JButton("Enter");
 		cmdEnter.addActionListener(new ActionListener() {
@@ -118,7 +121,7 @@ public class Login extends JFrame {
 				  user = data.LoginUser(txtUserName.getText(), strFromChar);
 				if (user != null   )
 				{
-					mainWindow.AfterLogin(user);
+					mainWindow.AfterLogin(user );
 					dispose(); // Destroy the JFrame object
 				} else
 					JOptionPane.showMessageDialog(login, "no user with this password !!");

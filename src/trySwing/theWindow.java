@@ -47,7 +47,7 @@ public class theWindow {
 		this.frmMainPage = frmMainPage;
 	}
 	
-	public void AfterLogin(User user){
+	public void AfterLogin(User user ){
       	loggedUser = user;
 	   lblUser.setText(user.getName());
 	   window.frmMainPage.setVisible(true);
@@ -100,16 +100,16 @@ public class theWindow {
 		frmMainPage.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				//DAO d = new DAO();
-				//d.CloseConnection();
 				dao.CloseConnection();
+				openLoginPage();
+				 frmMainPage.dispose();
 			}
 		});
 		frmMainPage.setTitle("Main Page");
 		frmMainPage.getContentPane().setBackground(new Color(153, 153, 0));
 
 		frmMainPage.setBounds(100, 100, 793, 621);
-		frmMainPage.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		//frmMainPage.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmMainPage.getContentPane().setLayout(null);
 
 		JButton btnNewButton = new JButton("Load Data");
@@ -133,7 +133,7 @@ public class theWindow {
 						  sql = "select * from employees";
 						  break;
 					case "users" :
-					  show = new String[] {"userName", "password" };
+					  show = new String[] {"userName", "password", "isAdmin" };
 					  sql = "select * from users";
 					  break;
 					case "logFiles" :
@@ -198,9 +198,10 @@ public class theWindow {
 						 int id = Integer.parseInt( table.getValueAt(table.getSelectedRow(), 1).toString())  ;
 				         String name = table.getValueAt(table.getSelectedRow(), 0).toString()  ;
 			     	     String password = table.getValueAt(table.getSelectedRow(), 2).toString()  ;
+			     	     Boolean isAdmin = (Boolean) table.getValueAt(table.getSelectedRow(), 3)   ;
 			         	txtFind.setText(name);
 			     	 
-						focusUser = new User( name,password, id);
+						focusUser = new User( name,password, id, isAdmin);
 						
 					}
 				});
@@ -304,6 +305,7 @@ public class theWindow {
 
 		_login.setVisible(true);
 		window.frmMainPage.setVisible(false);
+		 
 	}
 
 	public String getLblUser() {
